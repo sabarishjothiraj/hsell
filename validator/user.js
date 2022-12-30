@@ -1,0 +1,124 @@
+const {
+  check,
+  validationResult,
+  query
+} = require('express-validator')
+const stringFile = require('../common/string_file.json')
+const UserModel = require('../model/user')
+const md5 = require('md5')
+const {
+  ObjectId
+} = require('mongoose').Types
+
+
+exports.login = [
+  check('email').not().isEmpty().withMessage(stringFile.EMAIL_NOT_EMPTY).isEmail().withMessage(stringFile.VALID_EMAIL_ID),
+  check('password').not().isEmpty().withMessage(stringFile.PASSWORD_NOT_EMPTY).matches(/^.{6,20}$/, 'i').withMessage(stringFile.PASSWORD_VALIDATION_MESSAGE),
+  check('email').custom(async (value) => {
+    const user = await UserModel.findOne({
+      email: value.toLowerCase().trim()
+    }, {
+      _id: 1
+    }).lean().catch(e => {
+      throw Error(e.message)
+    })
+    if (!user) throw Error(stringFile.WRONG_EMAIL)
+    else return true
+  }),
+  check('password').custom(async (value, {
+    req
+  }) => {
+    const user = await UserModel.findOne({
+      email: req.body.email.toLowerCase(),
+      password: md5(value)
+    }, {
+      _id: 1,
+      status: 1
+    }).lean().catch(e => {
+      throw Error(e.message)
+    })
+    if (!user) throw Error(stringFile.WRONG_PASSWORD)
+    else if (!user.status) throw Error(stringFile.INACTIVE_USER)
+    else return true
+  }),
+  (req, res, next) => {
+    const errorValidation = validationResult(req)
+    if (!errorValidation.isEmpty()) {
+      return res.status(422).send({
+        message: errorValidation.errors.shift().msg
+      })
+    }
+    next()
+  }
+]
+
+exports.signUp = [
+  check('user_email').not().isEmpty().withMessage(stringFile.EMAIL_NOT_EMPTY).isEmail().withMessage(stringFile.VALID_EMAIL_ID),
+  check('user_fname').not().isEmpty().withMessage(stringFile.NAME_NOT_EMPTY),
+  check('user_lname').not().isEmpty().withMessage(stringFile.NAME_NOT_EMPTY),
+  check('user_phone').not().isEmpty().withMessage(stringFile.NAME_NOT_EMPTY),
+  check('user_type').not().isEmpty().withMessage(stringFile.NAME_NOT_EMPTY),
+  check('user_password').not().isEmpty().withMessage(stringFile.PASSWORD_NOT_EMPTY).matches(/^.{6,20}$/, 'i').withMessage(stringFile.PASSWORD_VALIDATION_MESSAGE),
+  check('user_email').custom(async (value) => {
+    const user = await UserModel.findOne({
+      user_email: value.toLowerCase().trim()
+    }, {
+      _id: 1
+    }).lean().catch(e => {
+      throw Error(e.message)
+    })
+    if (user) throw Error(stringFile.EMAIL_ALREADY_EXISTS)
+    else return true
+  }),
+  (req, res, next) => {
+    const errorValidation = validationResult(req)
+    if (!errorValidation.isEmpty()) {
+      return res.status(422).send({
+        message: errorValidation.errors.shift().msg
+      })
+    }
+    next()
+  }
+]
+
+exports.forgotPassword = [
+  check('email').not().isEmpty().withMessage(stringFile.EMAIL_NOT_EMPTY).isEmail().withMessage(stringFile.VALID_EMAIL_ID),
+  check('email').custom(async (value) => {
+    const user = await UserModel.findOne({
+      email: value.toLowerCase().trim()
+    }, {
+      _id: 1
+    }).lean().catch(e => {
+      throw Error(e.message)
+    })
+    if (!user) throw Error(stringFile.WRONG_EMAIL)
+    else return true
+  }),
+  (req, res, next) => {
+    const errorValidation = validationResult(req)
+    if (!errorValidation.isEmpty()) {
+      return res.status(422).send({
+        message: errorValidation.errors.shift().msg
+      })
+    }
+    next()
+  }
+]
+
+exports.resetPassword = [
+  check('userId').not().isEmpty().withMessage(stringFile.USER_ID_MUST_NOT_EMPTY),
+  check('password').not().isEmpty().withMessage(stringFile.PASSWORD_NOT_EMPTY),
+  check('userId').custom(async (value) => {
+    if (!ObjectId.isValid(value)) throw Error(stringFile.PROVIDE_VALID_USER_ID)
+    else return true
+  }),
+  (req, res, next) => {
+    const errorValidation = validationResult(req)
+    if (!errorValidation.isEmpty()) {
+      return res.status(422).send({
+        message: errorValidation.errors.shift().msg
+      })
+    }
+    next()
+  }
+]
