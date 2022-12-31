@@ -22,7 +22,7 @@ const login = (req) => {
             user_email: body.user_email.toUpperCase()
           }]
         }, {
-          password: md5(body.password)
+          user_password: md5(body.user_password)
         }]
       }, {
         $set: {
@@ -62,15 +62,16 @@ const signUp = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       let body = req.body
+      let user_id = await commonFunction.getNextId('users');
       let userResponse = await UserModel.create({
         user_fname: commonFunction.trim(commonFunction.toLowerCase(body.user_fname)),
         user_lname: commonFunction.trim(commonFunction.toLowerCase(body.user_lname)),
         user_email: commonFunction.trim(commonFunction.toLowerCase(body.user_email)),
         user_phone: commonFunction.trim(commonFunction.toLowerCase(body.user_phone)),
-        user_gender: commonFunction.trim(commonFunction.toLowerCase(body.user_gender)),
-        user_type: commonFunction.trim(commonFunction.toLowerCase(body.user_type)),
+        user_gender: commonFunction.trim(body.user_gender),
+        user_type: commonFunction.trim(body.user_type),
         user_password: md5(commonFunction.trim(req.body.user_password)),
-        user_id: commonFunction.getNextId('users'),
+        user_id: user_id,
       }).catch(e => reject({
         message1: e.message
       }))
@@ -147,7 +148,7 @@ const forgotPassword = (req) => {
       }))
       let otp = `${ Math.floor( 1000 + Math.random() * 9000 )}`
       await req.mailer.sendMail({
-        from: 'HSEL Team',
+        from: 'HSELL Team',
         to: userResponse.user_email,
         subject: "Forgot password",
         text: `Hi, Your OTP to update password`,
@@ -156,6 +157,33 @@ const forgotPassword = (req) => {
       resolve({
         message: stringFile.SUCCESS_MESSAGE,
         otp
+      })
+    } catch (e) {
+      reject({
+        message: e.message
+      })
+    }
+  })
+}
+
+// FACET PIPELINE USED TO GET LIST AND COUNT IN SINGLE QUERY
+// API WITH PARAM USED
+const profile = (req) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let body = req.body
+      let user = await UserModel.findOne({
+        user_id: req.params.id
+      })
+      .then(user => {
+        return user;
+      })
+      .catch(err => reject({
+        message: err.message
+      }))
+
+      resolve({
+        data: user
       })
     } catch (e) {
       reject({
@@ -227,5 +255,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   getAllUser,
+  profile,
   deleteUser
 }

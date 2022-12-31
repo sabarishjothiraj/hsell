@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const stringFile = require('./string_file.json')
+const UserModel = require('../model/user')
 require('dotenv').config()
 const nodemailer = require("nodemailer");
 
@@ -53,7 +54,7 @@ exports.connectMailService = () => {
       service: 'gmail',
       host: 'smtp.gmail.com',
       auth: {
-        user: "jsabarish.cit@gmail.com", // EMAIL
+        user: "jkarthikeyan003@gmail.com", // EMAIL
         pass: "wfdphckxpwnwtzfk", // APP PASSWORD
       },
     });
@@ -63,12 +64,15 @@ exports.connectMailService = () => {
   }
 }
 
-exports.getNextId = (table_name) => {
-    let user = UserModel.findOne().sort({ date: -1 }).limit(1);
-
-    if (user.length > 0) {
-      return (user.user_id + 1);
-    } else {
-      return 1;
-    }
+exports.getNextId = async (table_name) => {
+    return await UserModel.findOne()
+      .sort({user_id: -1})
+      .limit(1)
+      .then(user => {
+        if (typeof user.user_id != 'undefined') {
+          return (user.user_id + 1);
+        } else {
+          return 1;
+        }
+      });
 }

@@ -34,6 +34,12 @@ router.get('/getAllUser/:limit/:skip', (req, res) => {
   }).catch(err => res.status(stringFile.INTERNAL_ERROR_STATUS_CODE).send(err))
 })
 
+router.get('/profile/:id', (req, res) => {
+  userController.profile(req).then((data) => {
+    res.status(stringFile.SUCCESS_STATUS_CODE).send(data)
+  }).catch(err => res.status(stringFile.INTERNAL_ERROR_STATUS_CODE).send(err))
+})
+
 router.delete('/deleteUser', (req, res) => {
   userController.deleteUser(req).then((data) => {
     res.status(stringFile.SUCCESS_STATUS_CODE).send(data)

@@ -12,11 +12,11 @@ const {
 
 
 exports.login = [
-  check('email').not().isEmpty().withMessage(stringFile.EMAIL_NOT_EMPTY).isEmail().withMessage(stringFile.VALID_EMAIL_ID),
-  check('password').not().isEmpty().withMessage(stringFile.PASSWORD_NOT_EMPTY).matches(/^.{6,20}$/, 'i').withMessage(stringFile.PASSWORD_VALIDATION_MESSAGE),
-  check('email').custom(async (value) => {
+  check('user_email').not().isEmpty().withMessage(stringFile.EMAIL_NOT_EMPTY).isEmail().withMessage(stringFile.VALID_EMAIL_ID),
+  check('user_password').not().isEmpty().withMessage(stringFile.PASSWORD_NOT_EMPTY).matches(/^.{6,20}$/, 'i').withMessage(stringFile.PASSWORD_VALIDATION_MESSAGE),
+  check('user_email').custom(async (value) => {
     const user = await UserModel.findOne({
-      email: value.toLowerCase().trim()
+      user_email: value.toLowerCase().trim()
     }, {
       _id: 1
     }).lean().catch(e => {
@@ -25,20 +25,20 @@ exports.login = [
     if (!user) throw Error(stringFile.WRONG_EMAIL)
     else return true
   }),
-  check('password').custom(async (value, {
+  check('user_password').custom(async (value, {
     req
   }) => {
     const user = await UserModel.findOne({
-      email: req.body.email.toLowerCase(),
-      password: md5(value)
+      user_email: req.body.user_email.toLowerCase(),
+      user_password: md5(value)
     }, {
       _id: 1,
-      status: 1
+      user_status: 1
     }).lean().catch(e => {
       throw Error(e.message)
     })
     if (!user) throw Error(stringFile.WRONG_PASSWORD)
-    else if (!user.status) throw Error(stringFile.INACTIVE_USER)
+    else if (user.user_status != 'A') throw Error(stringFile.INACTIVE_USER)
     else return true
   }),
   (req, res, next) => {
@@ -82,10 +82,10 @@ exports.signUp = [
 ]
 
 exports.forgotPassword = [
-  check('email').not().isEmpty().withMessage(stringFile.EMAIL_NOT_EMPTY).isEmail().withMessage(stringFile.VALID_EMAIL_ID),
-  check('email').custom(async (value) => {
+  check('user_email').not().isEmpty().withMessage(stringFile.EMAIL_NOT_EMPTY).isEmail().withMessage(stringFile.VALID_EMAIL_ID),
+  check('user_email').custom(async (value) => {
     const user = await UserModel.findOne({
-      email: value.toLowerCase().trim()
+      user_email: value.toLowerCase().trim()
     }, {
       _id: 1
     }).lean().catch(e => {

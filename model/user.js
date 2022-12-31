@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-  user_id: Number,
+  user_id: {
+    type: Number,
+    unique: true
+  },
   user_fname: {
     type: String,
     required: true
@@ -22,11 +25,13 @@ const userSchema = new mongoose.Schema({
   },
   user_gender: {
     type: String,
-    required: true
+    enum: ['M','F','O'],
+    default: 'M'
   },
   user_type: {
     type: String,
-    required: true
+    enum: ['B','S'],
+    default: 'B'
   },
   user_status: {
     type: String,
