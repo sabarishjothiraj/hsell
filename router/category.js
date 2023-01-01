@@ -10,7 +10,7 @@ router.post('/createCategory', categoryValidator.createCategory, (req, res) => {
   }).catch(err => res.status(stringFile.INTERNAL_ERROR_STATUS_CODE).send(err))
 })
 
-router.get('/getCategoryListing', (req, res) => {
+router.get('/getCategoryListing/:limit/:skip', (req, res) => {
   categoryController.getCategoryListing(req).then((data) => {
     res.status(stringFile.SUCCESS_STATUS_CODE).send(data)
   }).catch(err => res.status(stringFile.INTERNAL_ERROR_STATUS_CODE).send(err))
