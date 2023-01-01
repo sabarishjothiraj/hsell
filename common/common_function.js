@@ -65,12 +65,12 @@ exports.connectMailService = () => {
 }
 
 exports.getNextId = async (table_name) => {
-    return await UserModel.findOne()
-      .sort({user_id: -1})
+    return await table_name.findOne()
+      .sort({_id: -1})
       .limit(1)
       .then(user => {
-        if (typeof user.user_id != 'undefined') {
-          return (user.user_id + 1);
+        if (user) {
+          return (user.id + 1);
         } else {
           return 1;
         }

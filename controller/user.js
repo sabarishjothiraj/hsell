@@ -62,7 +62,7 @@ const signUp = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       let body = req.body
-      let user_id = await commonFunction.getNextId('users');
+      let user_id = await commonFunction.getNextId(UserModel);
       let userResponse = await UserModel.create({
         user_fname: commonFunction.trim(commonFunction.toLowerCase(body.user_fname)),
         user_lname: commonFunction.trim(commonFunction.toLowerCase(body.user_lname)),

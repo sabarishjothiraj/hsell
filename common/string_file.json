@@ -20,5 +20,8 @@
     "LIMIT_MUST_NOT_EMPTY": "Limit must not be empty",
     "SKIP_MUST_NOT_EMPTY": "Skip must not be empty",
     "USER_ID_MUST_NOT_EMPTY": "User Id must not be empty",
-    "PROVIDE_VALID_USER_ID": "Provide valid userId"
+    "PROVIDE_VALID_USER_ID": "Provide valid userId",
+    "CATEGORY_NAME_MUST_NOT_EMPTY": "Category name must not be empty",
+    "CATEGORY_PARENT_ID_MUST_NOT_EMPTY": "Category parent id must not be empty",
+    "CATEGORY_PARENT_ID_MUST_BE_VALID": "Category parent id must be valid"
 }
