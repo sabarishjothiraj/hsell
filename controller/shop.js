@@ -4,25 +4,31 @@ const {
   ObjectId
 } = require('mongoose').Types
 require('dotenv').config()
-const CategoryModel = require('../model/category')
+const shopModel = require('../model/shop')
 const stringFile = require('../common/string_file.json')
 const commonFunction = require('../common/common_function')
 
-const createCategory = (req) => {
+const createShop = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       const body = req.body
-      let id = await commonFunction.getNextId(CategoryModel);
-      let category = new CategoryModel({
-        id: id,
-        cat_name: commonFunction.trim(commonFunction.toLowerCase(body.cat_name)),
-        cat_parent_id: body.cat_parent_id,
-        cat_desc: "",
-        cat_sIcon: "",
-        cat_mIcon: "",
-        cat_laIcon: "",
+      let id = await commonFunction.getNextId(shopModel);
+      let shop = new shopModel({
+        id,
+        shop_name: commonFunction.trim(commonFunction.toLowerCase(body.shop_name)),
+        shop_address_id: body.shop_address_id,
+        is_main: body.is_main,
+        shop_user_id: body.shop_user_id,
+        shop_profile_img_id: body.shop_profile_img_id,
+        shop_business_card_url: body.shop_business_card_url,
+        shop_proof_type: body.shop_proof_type,
+        shop_proof: body.shop_proof,
+        shop_status: body.shop_status,
+        shop_desc: body.shop_desc,
+        shop_prof_sImg: body.shop_prof_sImg,
+        shop_images: body.shop_images,
       })
-      await category.save().catch(e => reject({
+      await shop.save().catch(e => reject({
         message: e.message
       }))
       resolve({
@@ -36,17 +42,16 @@ const createCategory = (req) => {
   })
 }
 
-const getCategoryListing = (req) => {
+const getShopListing = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const body = req.body
       let limit = req.params.limit ? parseInt(req.params.limit) : stringFile.LIMIT
       let skip = req.params.skip ? parseInt(req.params.skip) : stringFile.SKIP
-      let response = await CategoryModel.aggregate([{
+      let response = await shopModel.aggregate([{
         $facet: {
           list: [{
             $sort: {
-              cat_name: 1
+              shop_name: 1
             }
           }, {
             $limit: limit
@@ -73,25 +78,8 @@ const getCategoryListing = (req) => {
   })
 }
 
-const getCategoryDetails = (req) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const body = req.params
-      let response = await CategoryModel.findOne({_id:ObjectId(body.id)}).catch(e=> reject({
-        message: e.message
-      }))
-      resolve(response)
-    } catch (e) {
-      reject({
-        message: e.message
-      })
-    }
-  })
-}
-
 
 module.exports = {
-  createCategory,
-  getCategoryListing,
-  getCategoryDetails
+  createShop,
+  getShopListing
 }

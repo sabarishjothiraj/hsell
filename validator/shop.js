@@ -4,15 +4,10 @@ const {
     query
 } = require('express-validator')
 const stringFile = require('../common/string_file.json')
-const UserModel = require('../model/category')
-const {
-    ObjectId
-} = require('mongoose').Types
 
 
-exports.createCategory = [
-    check('pro_name').not().isEmpty().withMessage(stringFile.CATEGORY_NAME_MUST_NOT_EMPTY),
-    check('cat_parent_id').not().isEmpty().withMessage(stringFile.CATEGORY_PARENT_ID_MUST_NOT_EMPTY),
+exports.createShop = [
+    check('shop_name').not().isEmpty().withMessage(stringFile.SHOP_NAME_MUST_NOT_EMPTY),
     (req, res, next) => {
         const errorValidation = validationResult(req)
         if (!errorValidation.isEmpty()) {

@@ -10,8 +10,8 @@ const {
 } = require('mongoose').Types
 
 
-exports.createCategory = [
-    check('pro_name').not().isEmpty().withMessage(stringFile.CATEGORY_NAME_MUST_NOT_EMPTY),
+exports.createProduct = [
+    check('cat_name').not().isEmpty().withMessage(stringFile.PRODUCT_NAME_MUST_NOT_EMPTY),
     check('cat_parent_id').not().isEmpty().withMessage(stringFile.CATEGORY_PARENT_ID_MUST_NOT_EMPTY),
     (req, res, next) => {
         const errorValidation = validationResult(req)

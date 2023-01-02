@@ -1,10 +1,8 @@
-const md5 = require('md5')
-const jwt = require('jsonwebtoken')
 const {
   ObjectId
 } = require('mongoose').Types
 require('dotenv').config()
-const CategoryModel = require('../model/category')
+const ProductModel = require('../model/product')
 const stringFile = require('../common/string_file.json')
 const commonFunction = require('../common/common_function')
 
@@ -12,17 +10,26 @@ const createCategory = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       const body = req.body
-      let id = await commonFunction.getNextId(CategoryModel);
-      let category = new CategoryModel({
+      let id = await commonFunction.getNextId(ProductModel);
+      let product = new ProductModel({
         id: id,
         cat_name: commonFunction.trim(commonFunction.toLowerCase(body.cat_name)),
-        cat_parent_id: body.cat_parent_id,
-        cat_desc: "",
-        cat_sIcon: "",
-        cat_mIcon: "",
-        cat_laIcon: "",
+        pro_name: commonFunction.trim(commonFunction.toLowerCase(body.pro_name)),
+        pro_desc: commonFunction.trim(commonFunction.toLowerCase(body.pro_desc)),
+        pro_short_desc: commonFunction.trim(commonFunction.toLowerCase(body.pro_short_desc)),
+        pro_price: body.pro_price,
+        pro_mrp: body.pro_mrp,
+        pro_disc_value: body.pro_disc_value,
+        pro_disc_type: body.pro_disc_type,
+        pro_disc_val: body.pro_disc_val,
+        pro_status: body.pro_status,
+        cat_id: body.cat_id,
+        pro_sku: body.pro_sku,
+        pro_features: body.pro_features,
+        pro_variants: body.pro_variants,
+        pro_in_pack: body.pro_in_pack
       })
-      await category.save().catch(e => reject({
+      await product.save().catch(e => reject({
         message: e.message
       }))
       resolve({
@@ -36,17 +43,22 @@ const createCategory = (req) => {
   })
 }
 
-const getCategoryListing = (req) => {
+const getProductListing = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       const body = req.body
+      let match = {}
+      if(req.query.cat_id){
+        let cat_id = !isNaN(req.query.cat_id) ? req.query.cat_id : parseInt(req.query.cat_id)
+        match = {cat_id: {$eq: cat_id}}
+      }
       let limit = req.params.limit ? parseInt(req.params.limit) : stringFile.LIMIT
       let skip = req.params.skip ? parseInt(req.params.skip) : stringFile.SKIP
-      let response = await CategoryModel.aggregate([{
+      let response = await ProductModel.aggregate([{$match:match},{
         $facet: {
           list: [{
             $sort: {
-              cat_name: 1
+              pro_name: 1
             }
           }, {
             $limit: limit
@@ -73,25 +85,8 @@ const getCategoryListing = (req) => {
   })
 }
 
-const getCategoryDetails = (req) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const body = req.params
-      let response = await CategoryModel.findOne({_id:ObjectId(body.id)}).catch(e=> reject({
-        message: e.message
-      }))
-      resolve(response)
-    } catch (e) {
-      reject({
-        message: e.message
-      })
-    }
-  })
-}
-
 
 module.exports = {
   createCategory,
-  getCategoryListing,
-  getCategoryDetails
+  getProductListing
 }

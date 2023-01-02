@@ -37,7 +37,7 @@ const login = (req) => {
         user_fname: loginResponse.user_fname,
         user_email: loginResponse.user_email,
         user_phone: loginResponse.user_phone,
-        user_id: loginResponse.user_id,
+        id: loginResponse.id,
         _id: loginResponse._id,
         readOnly: loginResponse.readOnly
       }
@@ -62,7 +62,7 @@ const signUp = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       let body = req.body
-      let user_id = await commonFunction.getNextId(UserModel);
+      let id = await commonFunction.getNextId(UserModel);
       let userResponse = await UserModel.create({
         user_fname: commonFunction.trim(commonFunction.toLowerCase(body.user_fname)),
         user_lname: commonFunction.trim(commonFunction.toLowerCase(body.user_lname)),
@@ -71,7 +71,7 @@ const signUp = (req) => {
         user_gender: commonFunction.trim(body.user_gender),
         user_type: commonFunction.trim(body.user_type),
         user_password: md5(commonFunction.trim(req.body.user_password)),
-        user_id: user_id,
+        id: id,
       }).catch(e => reject({
         message1: e.message
       }))
@@ -79,7 +79,7 @@ const signUp = (req) => {
         user_fname: userResponse.user_fname,
         user_email: userResponse.user_email,
         user_phone: userResponse.user_phone,
-        user_id: userResponse.user_id,
+        id: userResponse.id,
         _id: userResponse._id
       }
       resolve({
@@ -91,7 +91,7 @@ const signUp = (req) => {
         user_phone: userResponse.user_phone,
         user_gender: userResponse.user_gender,
         user_type: userResponse.user_type,
-        user_id: userResponse.user_id,
+        id: userResponse.id,
       })
     } catch (e) {
       reject({
@@ -173,7 +173,7 @@ const profile = (req) => {
     try {
       let body = req.body
       let user = await UserModel.findOne({
-        user_id: req.params.id
+        id: req.params.id
       })
       .then(user => {
         return user;

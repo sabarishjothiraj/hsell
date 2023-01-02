@@ -23,5 +23,7 @@
     "PROVIDE_VALID_USER_ID": "Provide valid userId",
     "CATEGORY_NAME_MUST_NOT_EMPTY": "Category name must not be empty",
     "CATEGORY_PARENT_ID_MUST_NOT_EMPTY": "Category parent id must not be empty",
-    "CATEGORY_PARENT_ID_MUST_BE_VALID": "Category parent id must be valid"
+    "CATEGORY_PARENT_ID_MUST_BE_VALID": "Category parent id must be valid",
+    "PRODUCT_NAME_MUST_NOT_EMPTY": "Product name must not be empty",
+    "SHOP_NAME_MUST_NOT_EMPTY": "Shop name must not be empty"
 }
