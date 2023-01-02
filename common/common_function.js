@@ -69,7 +69,8 @@ exports.getNextId = async (table_name) => {
       .sort({user_id: -1})
       .limit(1)
       .then(user => {
-        if (typeof user.user_id != 'undefined') {
+        console.log(user)
+        if (user != null) {
           return (user.user_id + 1);
         } else {
           return 1;
