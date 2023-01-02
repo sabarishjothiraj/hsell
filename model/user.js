@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     unique: true
   },
-  user_fname: {
+  user_name: {
     type: String,
     required: true
   },
@@ -41,6 +41,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['A','I'],
     default: 'A'
+  },
+  user_verify_otp: {
+    type: String
   },
   user_dob: Date,
   user_last_logged: {

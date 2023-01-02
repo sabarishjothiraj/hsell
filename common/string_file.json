@@ -12,9 +12,13 @@
     "PASSWORD_NOT_EMPTY": "Password must not be empty",
     "PASSWORD_VALIDATION_MESSAGE": "Password must contain minimum 6 characters",
     "WRONG_PASSWORD": "Entered password is wrong",
+    "WRONG_OTP": "Given otp is wrong",
     "WRONG_EMAIL": "Entered email id not exists",
+    "WRONG_PHONE": "Entered phone number not exists",
     "EMAIL_ALREADY_EXISTS": "Entered email id already exists",
     "NAME_NOT_EMPTY": "Name must not be empty",
+    "PHONE_NOT_EMPTY": "Phone number must not be empty",
+    "OTP_NOT_EMPTY": "OTP must not be empty",
     "INACTIVE_USER": "User not active",
     "SUCCESS_MESSAGE": "Success",
     "LIMIT_MUST_NOT_EMPTY": "Limit must not be empty",
@@ -25,5 +29,11 @@
     "CATEGORY_PARENT_ID_MUST_NOT_EMPTY": "Category parent id must not be empty",
     "CATEGORY_PARENT_ID_MUST_BE_VALID": "Category parent id must be valid",
     "PRODUCT_NAME_MUST_NOT_EMPTY": "Product name must not be empty",
-    "SHOP_NAME_MUST_NOT_EMPTY": "Shop name must not be empty"
+    "SHOP_NAME_MUST_NOT_EMPTY": "Shop name must not be empty",
+    "STATUS_SUCCESS": "success",
+    "STATUS_ERROR": "error",
+    "SUCCESS_PROFILE_UPDATE": "Successfully updated profile.",
+    "SUCCESS_VERIFIED_OTP": "Successfully verified OTP.",
+    "INVALID_USER": "Invalid User.",
+    "CITY_NOT_EMPTY": "City must not be empty."
 }

@@ -9,6 +9,40 @@ const stringFile = require('../common/string_file.json')
 const commonFunction = require('../common/common_function')
 
 // API WITH BODY USED
+const config = (req) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      city_list = [
+        {
+            "city_id": "1",
+            "city_name": "Coimbatore"
+        },
+        {
+            "city_id": "2",
+            "city_name": "Erode"
+        },
+        {
+            "city_id": "3",
+            "city_name": "Salem"
+        }
+      ],
+
+      resolve({
+        status: stringFile.STATUS_ERROR,
+        data: {
+          city_list: city_list
+        },
+        message: stringFile.SUCCESS_MESSAGE,
+      })
+    } catch (e) {
+      reject({
+        status: stringFile.STATUS_ERROR,
+        message: e.message
+      })
+    }
+  })
+}
+
 const login = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -31,6 +65,7 @@ const login = (req) => {
       }, {
         new: true
       }).lean().catch(err => reject({
+        status: stringFile.STATUS_ERROR,
         message: err.message
       }))
       const jwtBody = {
@@ -42,6 +77,7 @@ const login = (req) => {
         readOnly: loginResponse.readOnly
       }
       resolve({
+        status: stringFile.STATUS_SUCCESS,
         _id: loginResponse._id,
         message: stringFile.SUCCESS_MESSAGE,
         token: jwt.sign(jwtBody, `${process.env.AUTH_KEY}`),
@@ -52,6 +88,154 @@ const login = (req) => {
       })
     } catch (e) {
       reject({
+        status: stringFile.STATUS_ERROR,
+        message: e.message
+      })
+    }
+  })
+}// API WITH BODY USED
+
+const verifyPhone = (req) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const body = req.body
+      body.user_phone = body.user_phone.trim()
+      let otp = `${ Math.floor( 1000 + Math.random() * 9000 )}`
+      otp = 1234
+
+      const loginResponse = await UserModel.findOneAndUpdate({
+        user_phone: body.user_phone
+      }, {
+        $set: {
+          user_verify_otp: otp
+        }
+      }, {
+        new: true
+      }).lean().catch(err => reject({
+        status: stringFile.STATUS_ERROR,
+        message: err.message
+      }))
+      
+      resolve({
+        status: stringFile.STATUS_SUCCESS,
+        message: stringFile.SUCCESS_MESSAGE,
+        otp: otp,
+      })
+    } catch (e) {
+      reject({
+        status: stringFile.STATUS_ERROR,
+        message: e.message
+      })
+    }
+  })
+}
+
+const verifyLoginOtp = (req) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const body = req.body
+      body.user_phone = body.user_phone.trim()
+      body.user_verify_otp = body.user_verify_otp.trim()
+      const loginResponse = await UserModel.findOneAndUpdate({
+        $and: [{
+          user_phone: body.user_phone,
+          user_verify_otp: body.user_verify_otp
+        }]
+      }, {
+        $set: {
+          user_verify_otp: '',
+          last_logged_in: new Date()
+        }
+      }, {
+        new: true
+      }).lean().catch(err => reject({
+        status: stringFile.STATUS_ERROR,
+        message: err.message
+      }))
+      const jwtBody = {
+        user_name: loginResponse.user_name,
+        user_email: loginResponse.user_email,
+        user_phone: loginResponse.user_phone,
+        id: loginResponse.id,
+        _id: loginResponse._id
+      }
+      resolve({
+        status: stringFile.STATUS_SUCCESS,
+        data: {
+          _id: loginResponse._id,
+          user_id: loginResponse.user_id,
+          user_name: loginResponse.user_name,
+          user_email: loginResponse.user_email,
+          user_phone: loginResponse.user_phone
+        },
+        message: stringFile.SUCCESS_VERIFIED_OTP,
+        token: jwt.sign(jwtBody, `${process.env.AUTH_KEY}`),
+      })
+    } catch (e) {
+      reject({
+        status: stringFile.STATUS_ERROR,
+        message: e.message
+      })
+    }
+  })
+}
+
+const updateUserDetail = (req) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let body = req.body
+      let user = await UserModel.findOneAndUpdate({
+        user_id: body.user_id
+      }, {
+        $set: {
+          user_name: commonFunction.trim(commonFunction.toLowerCase(body.user_name)),
+          user_email: commonFunction.trim(commonFunction.toLowerCase(body.user_email)),
+        }
+      }, {
+        new: true,
+      }).catch(e => reject({
+        status: stringFile.STATUS_ERROR,
+        message: e.message
+      }))
+      if (!user) throw Error(stringFile.INVALID_USER)
+      resolve({
+        status: stringFile.STATUS_SUCCESS,
+        message: stringFile.SUCCESS_PROFILE_UPDATE,
+      })
+    } catch (e) {
+      reject({
+        status: stringFile.STATUS_ERROR,
+        message: e.message
+      })
+    }
+  })
+}
+
+const updateUserCity = (req) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let body = req.body
+      console.log(body)
+      const user = await UserModel.findOneAndUpdate({
+        user_id: body.user_id
+      }, {
+        $set: {
+          user_city_id: body.user_city_id
+        }
+      }, {
+        new: true
+      }).lean().catch(err => reject({
+        status: stringFile.STATUS_ERROR,
+        message: err.message
+      }))
+      if (!user) throw Error(stringFile.INVALID_USER)
+      resolve({
+        status: stringFile.STATUS_SUCCESS,
+        message: stringFile.SUCCESS_PROFILE_UPDATE,
+      })
+    } catch (e) {
+      reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       })
     }
@@ -73,7 +257,7 @@ const signUp = (req) => {
         user_password: md5(commonFunction.trim(req.body.user_password)),
         id: id,
       }).catch(e => reject({
-        message1: e.message
+        message: e.message
       }))
       const jwtBody = {
         user_fname: userResponse.user_fname,
@@ -95,7 +279,7 @@ const signUp = (req) => {
       })
     } catch (e) {
       reject({
-        message2: e.message
+        message: e.message
       })
     }
   })
@@ -250,7 +434,12 @@ const deleteUser = (req) => {
 }
 
 module.exports = {
+  config,
   login,
+  verifyPhone,
+  verifyLoginOtp,
+  updateUserDetail,
+  updateUserCity,
   signUp,
   forgotPassword,
   resetPassword,

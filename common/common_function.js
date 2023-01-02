@@ -7,7 +7,7 @@ const nodemailer = require("nodemailer");
 
 exports.JwtVerification = (req, res, next) => {
   let splited = req.path.split('/')
-  if (process.env.JWT_EXEPTIONAL_URL.includes(req.path) || splited[1] == 'file') {
+  if (process.env.JWT_EXCEPTIONAL_URL.includes(req.path) || splited[1] == 'file') {
     next()
   } else {
     jwt.verify(req.headers.authorization, process.env.AUTH_KEY, (err, result) => {

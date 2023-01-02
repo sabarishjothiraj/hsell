@@ -21,8 +21,8 @@ app.use('/api', commonFunction.JwtVerification, route)
 commonFunction.connectDatabase()
 app.request.mailer = commonFunction.connectMailService()
 
-app.get("/api/hsel", (req, res) => {
-  res.status(200).send("hsel ready to Start");
+app.get("/api/hsell", (req, res) => {
+  res.status(200).send("hsell ready to Start");
 });
 
 app.listen(process.env.PORT, (err) => {
