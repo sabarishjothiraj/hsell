@@ -103,7 +103,7 @@ const verifyPhone = (req) => {
       let otp = `${ Math.floor( 1000 + Math.random() * 9000 )}`
       otp = 1234
 
-      const loginResponse = await UserModel.findOneAndUpdate({
+      const user = await UserModel.findOneAndUpdate({
         user_phone: body.user_phone
       }, {
         $set: {
@@ -115,7 +115,17 @@ const verifyPhone = (req) => {
         status: stringFile.STATUS_ERROR,
         message: err.message
       }))
-      
+      if (!user) {
+        user_id = await commonFunction.getFieldNextId(UserModel, 'user_id')
+        let userResponse = await UserModel.create({
+          user_phone: commonFunction.trim(commonFunction.toLowerCase(body.user_phone)),
+          user_id: user_id,
+          user_verify_otp: otp
+        }).catch(e => reject({
+          message: e.message
+        }))
+      }
+
       resolve({
         status: stringFile.STATUS_SUCCESS,
         message: stringFile.SUCCESS_MESSAGE,
@@ -215,7 +225,6 @@ const updateUserCity = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       let body = req.body
-      console.log(body)
       const user = await UserModel.findOneAndUpdate({
         user_id: body.user_id
       }, {

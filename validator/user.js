@@ -65,18 +65,7 @@ exports.login = [
 ]
 
 exports.verifyPhone = [
-  check('user_phone').not().isEmpty().withMessage(stringFile.NAME_NOT_EMPTY),
-  check('user_phone').custom(async (value) => {
-    const user = await UserModel.findOne({
-      user_phone: value.toLowerCase().trim()
-    }, {
-      _id: 1
-    }).lean().catch(e => {
-      throw Error(e.message)
-    })
-    if (!user) throw Error(stringFile.WRONG_PHONE)
-    else return true
-  }),
+  check('user_phone').not().isEmpty().withMessage(stringFile.PHONE_NOT_EMPTY),
   (req, res, next) => {
     const errorValidation = validationResult(req)
     if (!errorValidation.isEmpty()) {

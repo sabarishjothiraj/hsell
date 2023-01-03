@@ -7,20 +7,20 @@ const userSchema = new mongoose.Schema({
   },
   user_name: {
     type: String,
-    required: true
+    // required: true
   },
   user_lname: {
     type: String,
-    required: true
+    // required: true
   },
   user_password: {
     type: String,
-    required: true
+    // required: true
   },
   user_email: {
-    unique: true,
+    // unique: true,
     type: String,
-    required: true
+    // required: true
   },
   user_phone: {
     unique: true,

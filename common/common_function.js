@@ -76,3 +76,19 @@ exports.getNextId = async (table_name) => {
         }
       });
 }
+
+exports.getFieldNextId = async (table_name, field) => {
+    return await table_name.findOne()
+      .sort({_id: -1})
+      .limit(1)
+      .then(user => {
+        if (user) {
+          if (field in user)
+            return (user[field] + 1);
+          else
+            return 1;
+        } else {
+          return 1;
+        }
+      });
+}
