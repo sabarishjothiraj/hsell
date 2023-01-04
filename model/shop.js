@@ -30,8 +30,8 @@ const shopSchema = new mongoose.Schema({
       type: String
   },
   shop_status: {
-      type: Boolean,
-      default: false
+      type: String,
+      default: "A"
   },
   shop_desc: {
       type: String

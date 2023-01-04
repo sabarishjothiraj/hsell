@@ -29,13 +29,16 @@ const createShop = (req) => {
         shop_images: body.shop_images,
       })
       await shop.save().catch(e => reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       }))
       resolve({
+        status: stringFile.STATUS_ERROR,
         message: stringFile.SUCCESS_MESSAGE
       })
     } catch (e) {
       reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       })
     }
@@ -58,20 +61,30 @@ const getShopListing = (req) => {
           }, {
             $skip: skip
           }],
-          count: {
-            $count: "total"
-          }
+          count: [{ $count: "total" }]
         }
       }]).catch(e => reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       }))
       response = response[0]
       resolve({
-        list: response.list ? response.list : [],
-        count: response.count && response.count.length && response.count[0].total ? response.count[0].total : 0
+        status: stringFile.STATUS_SUCCESS,
+        data: {
+          list: response.list ? response.list : [],
+          count: response.count && response.count.length && response.count[0].total ? response.count[0].total : 0
+        },
+        message: stringFile.SHOP_LISTED_SUCCESS,
+        banner_content: {
+          
+        },
+        ad_content: {
+          
+        }
       })
     } catch (e) {
       reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       })
     }

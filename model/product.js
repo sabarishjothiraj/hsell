@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema({
   id: {
-    type: String
+    type: Number
   },
   pro_name: {
     type: String
@@ -29,13 +29,14 @@ const productSchema = new mongoose.Schema({
     type: String
   },
   pro_status: {
-    type: Boolean
+    type: String
   },
   cat_id: {
     type: Number
   },
   pro_sku: {
-    type: String
+    type: String,
+    unique: true
   },
   pro_features: {
     type: String

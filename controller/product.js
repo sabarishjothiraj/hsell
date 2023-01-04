@@ -6,14 +6,13 @@ const ProductModel = require('../model/product')
 const stringFile = require('../common/string_file.json')
 const commonFunction = require('../common/common_function')
 
-const createCategory = (req) => {
+const createProduct = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       const body = req.body
       let id = await commonFunction.getNextId(ProductModel);
       let product = new ProductModel({
         id: id,
-        cat_name: commonFunction.trim(commonFunction.toLowerCase(body.cat_name)),
         pro_name: commonFunction.trim(commonFunction.toLowerCase(body.pro_name)),
         pro_desc: commonFunction.trim(commonFunction.toLowerCase(body.pro_desc)),
         pro_short_desc: commonFunction.trim(commonFunction.toLowerCase(body.pro_short_desc)),
@@ -30,13 +29,16 @@ const createCategory = (req) => {
         pro_in_pack: body.pro_in_pack
       })
       await product.save().catch(e => reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       }))
       resolve({
-        message: stringFile.SUCCESS_MESSAGE
+        status: stringFile.STATUS_SUCCESS,
+        message: stringFile.PRODUCT_SUCCESS_MESSAGE
       })
     } catch (e) {
       reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       })
     }
@@ -65,20 +67,30 @@ const getProductListing = (req) => {
           }, {
             $skip: skip
           }],
-          count: {
-            $count: "total"
-          }
+          count: [{ $count: "total" }]
         }
       }]).catch(e => reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       }))
       response = response[0]
       resolve({
-        list: response.list ? response.list : [],
-        count: response.count && response.count.length && response.count[0].total ? response.count[0].total : 0
+        status: stringFile.STATUS_SUCCESS,
+        data: {
+          list: response.list ? response.list : [],
+          count: response.count && response.count.length && response.count[0].total ? response.count[0].total : 0
+        },
+        message: stringFile.PRODUCT_LISTED_SUCCESS,
+        banner_content: {
+          
+        },
+        ad_content: {
+          
+        }
       })
     } catch (e) {
       reject({
+        status: stringFile.STATUS_ERROR,
         message: e.message
       })
     }
@@ -87,6 +99,6 @@ const getProductListing = (req) => {
 
 
 module.exports = {
-  createCategory,
+  createProduct,
   getProductListing
 }

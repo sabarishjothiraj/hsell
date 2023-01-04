@@ -5,10 +5,11 @@ const categorySchema = new mongoose.Schema({
     type: Number
   },
   cat_name: {
-    type: String
+    type: String,
+    unique: true
   },
   cat_parent_id: {
-    type: mongoose.Types.ObjectId
+    type: String
   },
   cat_desc: {
     type: String

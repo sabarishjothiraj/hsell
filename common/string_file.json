@@ -35,5 +35,15 @@
     "SUCCESS_PROFILE_UPDATE": "Successfully updated profile.",
     "SUCCESS_VERIFIED_OTP": "Successfully verified OTP.",
     "INVALID_USER": "Invalid User.",
-    "CITY_NOT_EMPTY": "City must not be empty."
+    "CITY_NOT_EMPTY": "City must not be empty.",
+    "CATEGORY_LISTED_SUCCESS": "Category listed successfully.",
+    "CATEGORY_SUCCESS_MESSAGE": "Category created successfully.",
+    "PRODUCT_LISTED_SUCCESS": "Product listed successfully.",
+    "PRODUCT_CATEGORY_ID_MUST_NOT_EMPTY": "Product category must not be empty",
+    "PRODUCT_SKU_MUST_NOT_EMPTY": "Product sku must not be empty",
+    "PRODUCT_PRICE_MUST_NOT_EMPTY": "Product price must not be empty",
+    "PRODUCT_MRP_MUST_NOT_EMPTY": "Product mrp must not be empty",
+    "PRODUCT_SUCCESS_MESSAGE": "Product created successfully.",
+    "SHOP_LISTED_SUCCESS": "Shop listed successfully.",
+    "SHOP_SUCCESS_MESSAGE": "Shop created successfully."
 }

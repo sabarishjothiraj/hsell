@@ -28,7 +28,7 @@ const config = (req) => {
       ],
 
       resolve({
-        status: stringFile.STATUS_ERROR,
+        status: stringFile.STATUS_SUCCESS,
         data: {
           city_list: city_list
         },
