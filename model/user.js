@@ -5,22 +5,22 @@ const userSchema = new mongoose.Schema({
     type: Number,
     unique: true
   },
-  user_fname: {
+  user_name: {
     type: String,
-    required: true
+    // required: true
   },
   user_lname: {
     type: String,
-    required: true
+    // required: true
   },
   user_password: {
     type: String,
-    required: true
+    // required: true
   },
   user_email: {
-    unique: true,
+    // unique: true,
     type: String,
-    required: true
+    // required: true
   },
   user_phone: {
     unique: true,
@@ -41,6 +41,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['A','I'],
     default: 'A'
+  },
+  user_verify_otp: {
+    type: String
   },
   user_dob: Date,
   user_last_logged: {

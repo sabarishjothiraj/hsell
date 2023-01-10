@@ -1,50 +1,46 @@
 const mongoose = require('mongoose')
 
 const categorySchema = new mongoose.Schema({
-  user_id: Number,
-  user_fname: {
+  id: {
+    type: Number
+  },
+  cat_name: {
     type: String,
-    required: true
+    unique: true
   },
-  user_lname: {
-    type: String,
-    required: true
+  cat_parent_id: {
+    type: String
   },
-  user_email: {
-    unique: true,
-    type: String,
-    required: true
+  cat_desc: {
+    type: String
   },
-  user_phone: {
-    unique: true,
-    type: String,
-    required: true
+  cat_sIcon: {
+    type: String
   },
-  user_gender: {
-    type: String,
-    required: true
+  cat_mIcon: {
+    type: String
   },
-  user_password: {
-    type: String,
-    required: true
+  cat_laIcon: {
+    type: String
   },
-  user_type: {
-    type: String,
-    required: true
+  cat_isEnabled: {
+    type: Boolean,
+    default: false
   },
-  user_status: {
-    type: String,
-    enum: ['A','I'],
-    default: 'A'
+  cat_isVisible: {
+    type: Boolean,
+    default: false
   },
-  user_dob: Date,
-  user_email_verify_token: String,
-  user_last_loggedin: {
-    type: Date,
-    default: Date.now
+  cat_showOnProfile: {
+    type: Boolean,
+    default: false
   },
+  submenu_visible: {
+    type: Boolean,
+    default: false
+  }
 }, {
   timestamps: true
-})
-const UserModel = mongoose.model('User', userSchema)
-module.exports = UserModel
+}) 
+const CategoryModel = mongoose.model('category', categorySchema)
+module.exports = CategoryModel

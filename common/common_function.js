@@ -1,14 +1,18 @@
-const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
-const stringFile = require('./string_file.json')
-const UserModel = require('../model/user')
-require('dotenv').config()
+const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+const stringFile = require("./string_file.json");
+const UserModel = require("../model/user");
+require("dotenv").config();
 const nodemailer = require("nodemailer");
+const errorHandler = require("../controller/error-handler");
 
 exports.JwtVerification = (req, res, next) => {
-  let splited = req.path.split('/')
-  if (process.env.JWT_EXEPTIONAL_URL.includes(req.path) || splited[1] == 'file') {
-    next()
+  let splited = req.path.split("/");
+  if (
+    process.env.JWT_EXCEPTIONAL_URL.includes(req.path) ||
+    splited[1] == "file"
+  ) {
+    next();
   } else {
     jwt.verify(req.headers.authorization, process.env.AUTH_KEY, (err, result) => {
       if (err) {
@@ -19,40 +23,40 @@ exports.JwtVerification = (req, res, next) => {
         req.authBody = result
         next()
       }
-    })
+    });
   }
-}
+};
 
 exports.connectDatabase = () => {
-  mongoose.set('strictQuery', true)
+  mongoose.set("strictQuery", true);
   mongoose.connect(process.env.DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    connectTimeoutMS: 10000
-  })
-}
+    connectTimeoutMS: 10000,
+  });
+};
 
 exports.capitalise = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 exports.validateNonEmptyString = (string) => {
-  return string.trim() != ""
-}
+  return string.trim() != "";
+};
 
 exports.toLowerCase = (string) => {
-  return string.toLowerCase()
-}
+  return string.toLowerCase();
+};
 
 exports.trim = (string) => {
-  return string.trim()
-}
+  return string.trim();
+};
 
 exports.connectMailService = () => {
   try {
     let transporter = nodemailer.createTransport({
-      service: 'gmail',
-      host: 'smtp.gmail.com',
+      service: "gmail",
+      host: "smtp.gmail.com",
       auth: {
         user: "jkarthikeyan003@gmail.com", // EMAIL
         pass: "wfdphckxpwnwtzfk", // APP PASSWORD
@@ -60,20 +64,36 @@ exports.connectMailService = () => {
     });
     return transporter;
   } catch (nodemailCatch) {
-    console.log("nodemailCatch", nodemailCatch)
+    console.log("nodemailCatch", nodemailCatch);
   }
-}
+};
 
 exports.getNextId = async (table_name) => {
-    return await UserModel.findOne()
-      .sort({user_id: -1})
-      .limit(1)
-      .then(user => {
-        console.log(user)
-        if (user != null) {
-          return (user.user_id + 1);
-        } else {
-          return 1;
-        }
-      });
-}
+  return await table_name
+    .findOne()
+    .sort({ _id: -1 })
+    .limit(1)
+    .then((user) => {
+      if (user) {
+        return user.id + 1;
+      } else {
+        return 1;
+      }
+    });
+};
+
+exports.getFieldNextId = async (table_name, field) => {
+  return await table_name
+    .findOne()
+    .sort({ _id: -1 })
+    .limit(1)
+    .lean()
+    .then((user) => {
+      if (user) {
+        if (field in user) return user[field] + 1;
+        else return 1;
+      } else {
+        return 1;
+      }
+    });
+};
